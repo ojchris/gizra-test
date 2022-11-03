@@ -32,6 +32,7 @@ module:
   file: 0
   filter: 0
   focal_point: 0
+  group_node_pevb: 0
   help: 0
   history: 0
   image: 0
@@ -45,12 +46,15 @@ module:
   menu_ui: 0
   mysql: 0
   node: 0
+  og: 0
+  og_ui: 0
   options: 0
   page_cache: 0
   path: 0
   path_alias: 0
   permissions_filter: 0
   pluggable_entity_view_builder: 0
+  pluggable_entity_view_builder_example: 0
   quickedit: 0
   rdf: 0
   redirect: 0
