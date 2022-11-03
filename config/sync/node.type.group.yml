@@ -11,7 +11,7 @@ third_party_settings:
     parent: 'main:'
 name: Group
 type: group
-description: 'Use group for collaborative content such as discussion forums.'
+description: ''
 help: ''
 new_revision: true
 preview_mode: 1

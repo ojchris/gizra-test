@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.node.group.body
     - field.field.node.group.field_body
     - node.type.group
   module:
@@ -14,6 +15,13 @@ targetEntityType: node
 bundle: group
 mode: default
 content:
+  body:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 101
+    region: content
   field_body:
     type: text_default
     label: above
