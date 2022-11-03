@@ -1,6 +1,8 @@
 name: Group Node PEVB
 type: module
 description: PEVB for the Group content type
-package: Gizra
+package: Pluggable entity view builder
 core: 8.x
 core_version_requirement: ^8 || ^9
+dependencies:
+  - pluggable_entity_view_builder:pluggable_entity_view_builder

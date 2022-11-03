@@ -6,7 +6,11 @@ dependencies:
     - node.type.group
 id: node-group-non-member
 label: Non-member
+<<<<<<< HEAD
 weight: 4
+=======
+weight: null
+>>>>>>> adc68e6 (Enable & configure og and group_node_pevb modules)
 group_id: null
 group_type: node
 group_bundle: group
