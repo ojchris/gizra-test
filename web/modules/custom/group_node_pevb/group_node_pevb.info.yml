@@ -1,0 +1,6 @@
+name: Group Node PEVB
+type: module
+description: PEVB for the Group content type
+package: Gizra
+core: 8.x
+core_version_requirement: ^8 || ^9
