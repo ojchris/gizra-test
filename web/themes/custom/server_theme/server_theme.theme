@@ -5,6 +5,9 @@
  * Theme custom logic.
  */
 
+use Drupal\node\NodeInterface;
+use Drupal\user\Entity\User;
+
 /**
  * Implements hook_theme().
  */
@@ -258,6 +261,55 @@ function server_theme_preprocess_page(array &$variables) {
   // carousel to make sure we present carousels in the correct direction.
   $language = \Drupal::languageManager()->getCurrentLanguage();
   $variables['#attached']['drupalSettings']['language']['direction'] = $language->getDirection();
+
+  // Subscription call to action.
+  $node = \Drupal::routeMatch()->getParameter('node');
+
+  if ($node instanceof NodeInterface) {
+    $node_id = $node->id();
+    $label = $node->label();
+
+    // Load the og_group.
+    /** @var \Drupal\Core\Entity\EntityInterface $group */
+    $group_type = $node->getEntityTypeId();
+    $group = \Drupal::entityTypeManager()->getStorage($group_type)->load($node_id);
+    /** @var \Drupal\og\OgAccessInterface $og_access */
+    $og_access = \Drupal::service('og.access');
+    $member = $og_access->userAccess($group, 'member');
+    // Current user is logged in (authenticated)
+    $logged_in = \Drupal::currentUser()->isAuthenticated();
+
+    if (!$member->isAllowed() && $logged_in) {
+      // Get current user account.
+      $account = User::load(\Drupal::currentUser()->id());
+      $name = $account->getAccountName();
+      $group = $group->bundle();
+
+      $query = \Drupal::entityTypeManager()->getStorage('og_membership_type')->getQuery();
+      $membership_types = $query->execute();
+      foreach ($membership_types as $membership_type) {
+        $types[] = 'plenty' . $membership_type;
+      }
+
+      $variables['name'] = $name;
+      $variables['label'] = $label;
+      $variables['member'] = $member;
+      $variables['group_id'] = $node_id;
+      $variables['group'] = $group;
+      $variables['group_type'] = $group_type;
+      $variables['member_types'] = $types;
+
+      // Display subscription CTA.
+      \Drupal::messenger()->addStatus(t('cHi %name, <u><strong><a href="group/@group_type/@group_id/subcribe/member">click here</a></u></strong> if you would like to subscribe to this group called %label.', [
+        '%name' => $name,
+        '@group' => $group,
+        '@group_type' => $group_type,
+        '@group_id' => $node_id,
+        '%label' => $label,
+      ]));
+    }
+
+  }
 }
 
 /**
