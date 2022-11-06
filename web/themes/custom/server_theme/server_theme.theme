@@ -264,7 +264,6 @@ function server_theme_preprocess_page(array &$variables) {
   $variables['#attached']['drupalSettings']['language']['direction'] = $language->getDirection();
 
   // OG group subscription CTA (call to action).
-
   /** @var \Drupal\Core\Entity\EntityInterface $node */
   $node = \Drupal::routeMatch()->getParameter('node');
 
@@ -305,7 +304,7 @@ function server_theme_preprocess_page(array &$variables) {
         $variables['member_types'] = $types;
 
         // Display subscription CTA.
-        \Drupal::messenger()->addStatus(t('cHi %name, <u><strong><a href="group/@group_type/@group_id/subcribe/member">click here</a></u></strong> if you would like to subscribe to this group called %label.', [
+        \Drupal::messenger()->addStatus(t('Hi %name, <u><strong><a href="group/@group_type/@group_id/subcribe/member">click here</a></u></strong> if you would like to subscribe to this group called %label.', [
           '%name' => $name,
           '@group' => $group,
           '@group_type' => $group_type,
