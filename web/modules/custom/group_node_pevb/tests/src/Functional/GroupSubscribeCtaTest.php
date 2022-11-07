@@ -76,10 +76,6 @@ class GroupSubscribeCtaTest extends BrowserTestBase {
     // Confirm.
     $session->statusCodeEquals(200);
 
-    $this->drupalGet('group/node/1/subscribe/default');
-    // Confirm.
-    $session->statusCodeEquals(200);
-
     // Find the new group node created in setup().
     /** @var \Drupal\Core\Entity\Query\QueryInterface $query */
     $query = \Drupal::entityQuery('node');
@@ -98,6 +94,11 @@ class GroupSubscribeCtaTest extends BrowserTestBase {
     // Click the link.
     /** @var \Drupal\Component\Render\MarkupInterface $label */
     $subscribe_link = 'group/' . $entity_type . '/' . $node_id . '/subscribe/default';
+
+    $this->drupalGet($subscribe_link);
+
+    // Confirm.
+    $session->statusCodeEquals(200);
 
     $name = \Drupal::currentUser()->getAccountName();
 
