@@ -20,13 +20,13 @@ trait GroupContentTypeTrait {
 
     // Create custom Body field.
     FieldStorageConfig::create([
-      'field_name' => 'field_description',
+      'field_name' => 'field_body',
       'type' => 'text_long',
       'entity_type' => 'node',
       'cardinality' => 1,
     ])->save();
     FieldConfig::create([
-      'field_name' => 'field_description',
+      'field_name' => 'field_body',
       'entity_type' => 'node',
       'bundle' => 'group',
       'label' => 'Body',
@@ -40,6 +40,7 @@ trait GroupContentTypeTrait {
     $settings = [
       'title' => 'Working wonders',
       'type' => 'group',
+      'field_body' => 'There is always way to the wonders of the world',
       'uid' => $user->id(),
     ];
     $node = Node::create($settings);
