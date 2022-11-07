@@ -6,8 +6,6 @@
  */
 
 use Drupal\node\NodeInterface;
-use Drupal\user\Entity\User;
-use Drupal\Core\Session\AccountInterface;
 use Drupal\og\Og;
 
 /**
@@ -291,7 +289,7 @@ function server_theme_preprocess_page(array &$variables) {
       $logged_in = \Drupal::currentUser()->isAuthenticated();
 
       if ($logged_in) {
-        // Logged_in non-members are allowed to subscribe.
+        // Allow logged_in non-members with no prending request to subscribe.
         if (!$is_member && !$pending && $member->isAllowed()) {
           $name = $account->getAccountName();
           $group_label = $group->label();
