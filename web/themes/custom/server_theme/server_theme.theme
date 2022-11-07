@@ -304,7 +304,7 @@ function server_theme_preprocess_page(array &$variables) {
           $variables['group_type'] = $group_type;
 
           // Display subscription CTA.
-          \Drupal::messenger()->addStatus(t('Hi %name, <u><strong><a href="/group/@group_type/@group_id/subscribe/member">click here</a></u></strong> if you would like to subscribe to this group called %label.', [
+          \Drupal::messenger()->addStatus(t('Hi %name, <u><strong><a href="/group/@group_type/@group_id/subscribe/default">click here</a></u></strong> if you would like to subscribe to this group called %label.', [
             '%name' => $name,
             '@group' => $group,
             '@group_type' => $group_type,
