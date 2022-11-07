@@ -2,8 +2,9 @@
 
 namespace Drupal\Tests\group_node_pevb\Functional;
 
-use Drupal\Tests\BrowserTestBase;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Tests\group_node_pevb\Traits\GroupContentTypeTrait;
+use Drupal\Tests\BrowserTestBase;
 use Drupal\og\Og;
 
 /**
@@ -13,6 +14,7 @@ use Drupal\og\Og;
  */
 class GroupSubscribeCtaTest extends BrowserTestBase {
   use GroupContentTypeTrait;
+  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
@@ -42,8 +44,13 @@ class GroupSubscribeCtaTest extends BrowserTestBase {
     $this->createGroupContentType();
     // Make the group content type an OG group.
     Og::addGroup('node', 'group');
+
+    $title = 'Working wonders';
+    /** @var \Drupal\node\Entity\NodeType $node_type */
+    $node_type = 'group';
+    $body = 'There is always way to the wonders of the world.';
     // Create node of type Group.
-    $this->createGroupNode($admin_user);
+    $this->createGroupNode($title, $node_type, $body, $admin_user);
     // Logs out.
     $this->drupalLogout($admin_user);
 
@@ -73,10 +80,39 @@ class GroupSubscribeCtaTest extends BrowserTestBase {
     // Confirm.
     $session->statusCodeEquals(200);
 
+    // Find the new group node created in setup().
+    /** @var \Drupal\Core\Entity\Query\QueryInterface $query */
+    $query = \Drupal::entityQuery('node');
+    $query->condition('type', 'group')->accessCheck(FALSE);
+    $results = $query->execute();
+    $session->assert(count($results) === 1, 'One group node was found.');
+
+    $entity_type_manager = \Drupal::entityTypeManager();
+    $node_storage = $entity_type_manager->getStorage('node');
+    /** @var \Drupal\node\Entity\Node $node */
+    $node = $node_storage->load(reset($results));
+    $entity_type = $node->getEntityTypeId();
+    $node_id = $node->id();
+    $node_title = $node->label();
+
     // Click the link.
     /** @var \Drupal\Component\Render\MarkupInterface $label */
-    $label = 'group/node/1/subscribe/default';
-    $this->clickLink($label);
+    $subscribe_link = 'group/' . $entity_type . '/' . $node_id . '/subscribe/default';
+
+    $name = \Drupal::currentUser()->getAccountName();
+
+    // Display subscription CTA.
+    \Drupal::messenger()->addStatus($this->t('Hi %name, <u><strong><a href="%link">click here</a></u></strong> if you would like to subscribe to this group called %label.', [
+      '%name' => $name,
+      '%label' => $node_title,
+      '%link' => $subscribe_link,
+    ]));
+
+    // Check that link with this text exist.
+    $session->assert->LinkExists('click here');
+    // Click the link.
+    $session->assert->getPage()->clickLink('click here');
+
   }
 
 }

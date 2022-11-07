@@ -6,6 +6,7 @@ use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\Entity\Node;
+use Drupal\Core\Session\AccountInterface;
 
 /**
  * Provides a helper method for creating a repository content type with fields.
@@ -36,11 +37,11 @@ trait GroupContentTypeTrait {
   /**
    * Create Group node.
    */
-  public function createGroupNode($user) {
+  public function createGroupNode(string $title, NodeType $node_type, string $body, AccountInterface $user) {
     $settings = [
-      'title' => 'Working wonders',
-      'type' => 'group',
-      'field_body' => 'There is always way to the wonders of the world',
+      'title' => $title,
+      'type' => $node_type,
+      'field_body' => $body,
       'uid' => $user->id(),
     ];
     $node = Node::create($settings);
