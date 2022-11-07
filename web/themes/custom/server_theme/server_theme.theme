@@ -286,12 +286,13 @@ function server_theme_preprocess_page(array &$variables) {
       $account = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
 
       $is_member = Og::isMember($group, $account);
+      $pending = Og::isMemberPending($group, $account);
       // Current user is logged in (authenticated)
       $logged_in = \Drupal::currentUser()->isAuthenticated();
 
       if ($logged_in) {
         // Logged_in non-members are allowed to subscribe.
-        if (!$is_member && $member->isAllowed()) {
+        if (!$is_member && !$pending && $member->isAllowed()) {
           $name = $account->getAccountName();
           $group_label = $group->label();
           $group = $group->bundle();
