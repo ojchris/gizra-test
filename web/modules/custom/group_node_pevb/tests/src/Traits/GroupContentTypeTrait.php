@@ -5,6 +5,7 @@ namespace Drupal\Tests\group_node_pevb\Traits;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\Entity\NodeType;
+use Drupal\node\Entity\Node;
 
 /**
  * Provides a helper method for creating a repository content type with fields.
@@ -30,6 +31,19 @@ trait GroupContentTypeTrait {
       'bundle' => 'group',
       'label' => 'Body',
     ])->save();
+  }
+
+  /**
+   * Create Group node.
+   */
+  public function createGroupNode($user) {
+    $settings = [
+      'title' => 'Working wonders',
+      'type' => 'group',
+      'uid' => $user->id(),
+    ];
+    $node = Node::create($settings);
+    return $node;
   }
 
 }

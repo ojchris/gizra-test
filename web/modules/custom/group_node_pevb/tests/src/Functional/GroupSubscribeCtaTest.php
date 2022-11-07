@@ -42,6 +42,8 @@ class GroupSubscribeCtaTest extends BrowserTestBase {
     $this->createGroupContentType();
     // Make the group content type an OG group.
     Og::addGroup('node', 'group');
+    // Create node of type Group.
+    $this->createGroupNode($admin_user);
     // Logs out.
     $this->drupalLogout($admin_user);
 
