@@ -7,6 +7,7 @@
 
 use Drupal\node\NodeInterface;
 use Drupal\user\Entity\User;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\og\Og;
 
 /**
@@ -278,39 +279,39 @@ function server_theme_preprocess_page(array &$variables) {
     if (Og::isGroup($group_type, $group->bundle())) {
       /** @var \Drupal\og\OgAccessInterface $og_access */
       $og_access = \Drupal::service('og.access');
-      $member = $og_access->userAccess($group, 'member');
+      $member = $og_access->userAccess($group, 'subscribe');
+
+      // Get current user account.
+      /** @var \Drupal\Core\Session\AccountInterface $account */
+      $account = \Drupal::entityTypeManager()->getStorage('user')->load(\Drupal::currentUser()->id());
+
+      $is_member = Og::isMember($group, $account);
       // Current user is logged in (authenticated)
       $logged_in = \Drupal::currentUser()->isAuthenticated();
 
-      if (!$member->isAllowed() && $logged_in) {
-        // Get current user account.
-        $account = User::load(\Drupal::currentUser()->id());
-        $name = $account->getAccountName();
-        $group_label = $group->label();
-        $group = $group->bundle();
+      if ($logged_in) {
+        // Logged_in non-members are allowed to subscribe.
+        if (!$is_member && $member->isAllowed()) {
+          $name = $account->getAccountName();
+          $group_label = $group->label();
+          $group = $group->bundle();
 
-        $query = \Drupal::entityTypeManager()->getStorage('og_membership_type')->getQuery();
-        $membership_types = $query->execute();
-        foreach ($membership_types as $membership_type) {
-          $types[] = 'plenty' . $membership_type;
+          $variables['name'] = $name;
+          $variables['label'] = $group_label;
+          $variables['member'] = $member;
+          $variables['group_id'] = $node_id;
+          $variables['group'] = $group;
+          $variables['group_type'] = $group_type;
+
+          // Display subscription CTA.
+          \Drupal::messenger()->addStatus(t('Hi %name, <u><strong><a href="/group/@group_type/@group_id/subscribe/member">click here</a></u></strong> if you would like to subscribe to this group called %label.', [
+            '%name' => $name,
+            '@group' => $group,
+            '@group_type' => $group_type,
+            '@group_id' => $node_id,
+            '%label' => $group_label,
+          ]));
         }
-
-        $variables['name'] = $name;
-        $variables['label'] = $group_label;
-        $variables['member'] = $member;
-        $variables['group_id'] = $node_id;
-        $variables['group'] = $group;
-        $variables['group_type'] = $group_type;
-        $variables['member_types'] = $types;
-
-        // Display subscription CTA.
-        \Drupal::messenger()->addStatus(t('Hi %name, <u><strong><a href="group/@group_type/@group_id/subcribe/member">click here</a></u></strong> if you would like to subscribe to this group called %label.', [
-          '%name' => $name,
-          '@group' => $group,
-          '@group_type' => $group_type,
-          '@group_id' => $node_id,
-          '%label' => $group_label,
-        ]));
       }
     }
 
